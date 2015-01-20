@@ -1,36 +1,50 @@
 package com.android.wesleyseago.blogreader;
 
 import android.app.ListActivity;
-import android.support.v7.app.ActionBarActivity;
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 
 public class MainListActivity extends ListActivity {
 
-    protected String[] mAndroidNames = {
-            "Android beta",
-            "Android 1.0",
-            "Android 1.1",
-            "Cupcake",
-            "Donut",
-            "Eclair",
-            "Froyo",
-            "Gingerbread",
-            "Honeycomb",
-            "Ice Cream Sandwich",
-            "Jelly Bean"
-    };
+    protected String[] mBlogPostTitles;
+    public static final int NUMBER_OF_POSTS = 20;
+    public static final String TAG = MainListActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_list);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, mAndroidNames);
-        setListAdapter(adapter);
+        try {
+            URL blogFeedUrl = new URL("http://blog.teamtreehouse.com/api/get_recent_summary/?count=" + NUMBER_OF_POSTS);
+            HttpURLConnection connection = (HttpURLConnection) blogFeedUrl.openConnection();
+            connection.connect();
+
+            int responseCode = connection.getResponseCode();
+            Log.i(TAG, "Code: " + responseCode);
+        }
+        catch (MalformedURLException e) {
+            Log.e(TAG, "Exception caught", e);
+        }
+        catch (IOException e) {
+            Log.e(TAG, "Exception caught", e);
+        }
+        catch (Exception e) {
+            Log.e(TAG, "Exception caught", e);
+        }
+
+
+        //   Toast.makeText(this, message, Toast.LENGTH_LONG).show();
 
     }
 
