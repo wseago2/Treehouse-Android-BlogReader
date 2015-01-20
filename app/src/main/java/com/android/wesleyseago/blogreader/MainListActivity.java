@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -62,6 +63,27 @@ public class MainListActivity extends ListActivity {
         //   Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 
+
+    @Override
+    protected void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
+
+        JSONArray jsonPosts = null;
+        try {
+            jsonPosts = mBlogData.getJSONArray("posts");
+            JSONObject jsonPost = jsonPosts.getJSONObject(position);
+            String blogUrl = jsonPost.getString("url");
+        }
+        catch (JSONException e) {
+            logException(e);
+        }
+
+    }
+
+    private void logException(Exception e) {
+        Log.e(TAG, "Exception caught!", e);
+    }
+
     private boolean isNetworkAvailable() {
         ConnectivityManager manager = (ConnectivityManager)
                 getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -73,13 +95,6 @@ public class MainListActivity extends ListActivity {
         return isAvailable;
     }
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main_list, menu);
-        return true;
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -132,7 +147,7 @@ public class MainListActivity extends ListActivity {
                 setListAdapter(adapter);
 
             } catch (JSONException e) {
-                Log.e(TAG, "Exception caught!", e);
+                logException(e);
             }
         }
     }
@@ -180,13 +195,13 @@ public class MainListActivity extends ListActivity {
 
             }
             catch (MalformedURLException e) {
-                Log.e(TAG, "Exception caught", e);
+                logException(e);
             }
             catch (IOException e) {
-                Log.e(TAG, "Exception caught", e);
+                logException(e);
             }
             catch (Exception e) {
-                Log.e(TAG, "Exception caught", e);
+                logException(e);
             }
             return jsonResponse;
         }
