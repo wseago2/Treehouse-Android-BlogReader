@@ -1,12 +1,13 @@
 package com.android.wesleyseago.blogreader;
 
+import android.app.ListActivity;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
 
-public class MainListActivity extends ActionBarActivity {
+public class MainListActivity extends ListActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
