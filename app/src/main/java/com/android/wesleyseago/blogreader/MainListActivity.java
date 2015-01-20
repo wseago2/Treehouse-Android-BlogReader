@@ -1,5 +1,6 @@
 package com.android.wesleyseago.blogreader;
 
+import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.res.Resources;
@@ -7,6 +8,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -86,11 +88,29 @@ public class MainListActivity extends ListActivity {
 
     private void updateList() {
         if (mBlogData == null) {
-            // TODO: handle error
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle(getString(R.string.title));
+                builder.setMessage(getString(R.string.error_message));
+                builder.setPositiveButton(android.R.string.ok, null);
+            AlertDialog dialog = builder.create();
+            dialog.show();
         }
         else {
             try {
-                Log.d(TAG, mBlogData.toString(2));
+               JSONArray jsonPosts = mBlogData.getJSONArray("posts");
+                mBlogPostTitles = new String[jsonPosts.length()];
+                // Loop through to get titles
+                for (int i = 0; i < jsonPosts.length(); i++) {
+                    JSONObject post = jsonPosts.getJSONObject(i);
+                    String title = post.getString("title");
+                    title = Html.fromHtml(title).toString();
+                    mBlogPostTitles[i] = title;
+                }
+
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                        android.R.layout.simple_list_item_1, mBlogPostTitles);
+                setListAdapter(adapter);
+
             } catch (JSONException e) {
                 Log.e(TAG, "Exception caught!", e);
             }
